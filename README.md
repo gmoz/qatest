@@ -1,5 +1,5 @@
 # ACY register test
-for zerologix
+for interview
 
 - pip3 install requirements.txt
 - pytest
