@@ -1,0 +1,18 @@
+TargetUrl: https://acy.com/en/open-live-account
+FormValue_S01:
+  AccountType: 'Personal'
+  Country: 'Taiwan'
+  Title: 'Mr'
+  FirstName: 'JOHN'
+  LastName: 'CENA'
+  Email: 'jtest12345@gmail.com'
+  PhoneArea: '+886'
+  Phone: '09342823'
+  MobileAuthenticationCode: '5566'
+
+FormValue_S02:
+  PhotoIDNumber: 'A1234567890'
+  ResidentialAddress: 'No. 333, Ruiguang Rd., Neihu Dist.'
+  City: 'Taipei City'
+  State: 'Taiwan (R.O.C.)'
+  ZipCode: '114'
