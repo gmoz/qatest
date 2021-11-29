@@ -14,7 +14,7 @@ import yaml
 class TestACY:
     driver = None
 
-    @pytest.fixture(scope='session', autouse=True)
+    @pytest.fixture(scope='class')
     def webdriver(self):
 
         if self.driver is None:
@@ -26,7 +26,7 @@ class TestACY:
 
         return driver
 
-    @pytest.fixture(scope='session', autouse=True)
+    @pytest.fixture(scope='class')
     def param(self):
         param = {}
         with open('params_tcs.yaml', 'r') as f:
