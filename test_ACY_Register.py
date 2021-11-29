@@ -8,6 +8,8 @@ from selenium.webdriver.common.by import By
 import yaml
 
 
+@allure.epic('ACY Register Testing')
+@allure.feature('TCS01-S07')
 class TestACY:
     param = None
 
@@ -30,7 +32,8 @@ class TestACY:
         mail.append("@test.com")
         return "".join(mail)
 
-    @allure.story('Step 01-You are just 6 easy steps away from placing your first trade with us.')
+    @allure.title('TCS01')
+    @allure.description('Step 01-You are just 6 easy steps away from placing your first trade with us.')
     def TCS01(self):
         options = webdriver.ChromeOptions()
         options.add_argument("--disable-notifications")
@@ -88,7 +91,8 @@ class TestACY:
         # Test Case S01-07 TBD
         self.TCS02(driver)
 
-    @allure.story('Step 02 - Tell us more about yourself.')
+    @allure.title('TCS02')
+    @allure.description('Step 02 - Tell us more about yourself.')
     def TCS02(self, driver):
         id_field = driver.find_element(By.CSS_SELECTOR, "[data-testid=idNo]")
         address_field = driver.find_element(By.CSS_SELECTOR, "[data-testid=street]")
@@ -124,7 +128,8 @@ class TestACY:
 
         self.TCS03(driver)
 
-    @allure.story('Step 03 - Tell us your trading preferences.')
+    @allure.title('TCS03')
+    @allure.description('Step 03 - Tell us your trading preferences.')
     def TCS03(self, driver):
         next_btn = driver.find_element(By.CSS_SELECTOR, "[data-testid=submitTradingPreferences]")
         with allure.step("Test Case S03-01"):
@@ -153,7 +158,8 @@ class TestACY:
 
         self.TCS04(driver)
 
-    @allure.story('Step 04 - (1/2)We have created some practice questions for you')
+    @allure.title('TCS04')
+    @allure.description('Step 04 - (1/2)We have created some practice questions for you')
     def TCS04(self, driver):
         next_btn = driver.find_element(By.CSS_SELECTOR, "[data-testid=goNext]")
         with allure.step("Test Case S04-01"):
@@ -182,7 +188,8 @@ class TestACY:
         time.sleep(3)
         self.TCS04_2(driver)
 
-    @allure.story('Step 04 - (2/2)We have created some practice questions for you')
+    @allure.title('TCS04_2')
+    @allure.description('Step 04 - (2/2)We have created some practice questions for you')
     def TCS04_2(self, driver):
         next_btn = driver.find_element(By.CSS_SELECTOR, "[data-testid=submitExperiences]")
         with allure.step("Test Case S04_2-01"):
@@ -210,7 +217,8 @@ class TestACY:
         time.sleep(3)
         self.TCS05(driver)
 
-    @allure.story('Step 05 - Please confirm you have read our Terms')
+    @allure.title('TCS05')
+    @allure.description('Step 05 - Please confirm you have read our Terms')
     def TCS05(self, driver):
         next_btn = driver.find_element(By.CSS_SELECTOR, "[data-testid=submitTerms]")
         with allure.step("Test Case S05-01"):
@@ -234,7 +242,8 @@ class TestACY:
         time.sleep(5)
         self.TCS06(driver)
 
-    @allure.story('Step 06 - Confirm your ID')
+    @allure.title('TCS06')
+    @allure.description('Step 06 - Confirm your ID')
     def TCS06(self, driver):
         next_btn = driver.find_element(By.CSS_SELECTOR, "[data-testid=submitconfirmIdPersonal]")
         with allure.step("Test Case S06-01"):
@@ -269,7 +278,8 @@ class TestACY:
         next_btn.click()
         # self.TCS07(driver)
 
-    @allure.story('Thank you')
+    @allure.title('TCS07')
+    @allure.description('Thank you')
     def TCS07(self, driver):
 
         time.sleep(10)

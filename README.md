@@ -2,4 +2,5 @@
 for interview
 
 - pip3 install requirements.txt
-- pytest
+- pytest --alluredir ./report
+- allure serve ./report
