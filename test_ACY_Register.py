@@ -1,8 +1,8 @@
 import os
 import time
+import random
 
 import allure
-import pytest
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 import yaml
@@ -12,12 +12,23 @@ class TestACY:
     param = None
 
     def init_param(self):
-        with open('params_tcs01.yaml', 'r') as f:
+        with open('params_tcs.yaml', 'r') as f:
             self.param = yaml.load(f, Loader=yaml.FullLoader)
 
     def get_otp_code(self, phone):
         # suppose there is an API can get the correct otp code
         return "1234"
+
+    def get_random_email(self):
+        base = ['i', 'a', 'm', 'h', 'a', 'n', 'd', 's', 'o', 'm', 'e']
+        mail = []
+        for i in range(0, 5):
+            n = random.randint(1, 10)
+            mail.append(base[n])
+
+        mail.append(str(time.time_ns())[-6:-1])
+        mail.append("@test.com")
+        return "".join(mail)
 
     @allure.story('Step 01-You are just 6 easy steps away from placing your first trade with us.')
     def TCS01(self):
@@ -25,6 +36,7 @@ class TestACY:
         options.add_argument("--disable-notifications")
         # options.add_argument("--headless")
         driver = webdriver.Chrome(options=options)
+        driver.set_window_size(1280, 1080)
 
         # bypass the i18n
         driver.get(self.param['TargetUrl'])
@@ -59,7 +71,7 @@ class TestACY:
 
         first_name_field.send_keys(self.param['FormValue_S01']['FirstName'])
         last_name_field.send_keys(self.param['FormValue_S01']['LastName'])
-        email_field.send_keys(self.param['FormValue_S01']['Email'])
+        email_field.send_keys(self.get_random_email())
 
         driver.execute_script("document.querySelector('[data-testid=undefined0]').click();")
         phone.send_keys(self.param['FormValue_S01']['Phone'])
@@ -70,7 +82,8 @@ class TestACY:
             pass
         assert next_btn.get_attribute("disabled") is None
 
-        next_btn.click()
+        # next_btn.click()
+        driver.execute_script("$(arguments[0]).click()", next_btn)
         time.sleep(5)
         # Test Case S01-07 TBD
         self.TCS02(driver)
@@ -104,7 +117,8 @@ class TestACY:
             pass
         assert next_btn.get_attribute("disabled") is None
 
-        next_btn.click()
+        # next_btn.click()
+        driver.execute_script("$(arguments[0]).click()", next_btn)
         # Test Case S02-04 TBD
         time.sleep(5)
 
@@ -132,7 +146,8 @@ class TestACY:
             pass
         assert next_btn.get_attribute("disabled") is None
 
-        next_btn.click()
+        # next_btn.click()
+        driver.execute_script("$(arguments[0]).click()", next_btn)
         # Test Case S03-05 TBD
         time.sleep(5)
 
@@ -161,9 +176,10 @@ class TestACY:
         assert next_btn.get_attribute("disabled") is None
 
         time.sleep(1)
-        next_btn.click()
+        # next_btn.click()
+        driver.execute_script("$(arguments[0]).click()", next_btn)
         # Test Case S04-04 TBD
-        time.sleep(5)
+        time.sleep(3)
         self.TCS04_2(driver)
 
     @allure.story('Step 04 - (2/2)We have created some practice questions for you')
@@ -182,21 +198,22 @@ class TestACY:
         radios[29].click()
         radios[34].click()
 
-        time.sleep(1)
         with allure.step("Test Case S04_2-02"):
             pass
         assert next_btn.get_attribute("disabled") is None
 
         time.sleep(1)
-        next_btn.click()
+        # next_btn.click()
+        driver.execute_script("$(arguments[0]).click()", next_btn)
+
         # Test Case S05-03 TBD
-        time.sleep(5)
+        time.sleep(3)
         self.TCS05(driver)
 
     @allure.story('Step 05 - Please confirm you have read our Terms')
     def TCS05(self, driver):
         next_btn = driver.find_element(By.CSS_SELECTOR, "[data-testid=submitTerms]")
-        with allure.step("Test Case S06-01"):
+        with allure.step("Test Case S05-01"):
             pass
         assert next_btn.get_attribute("disabled") is not None
 
@@ -207,20 +224,20 @@ class TestACY:
             r.click()
 
         time.sleep(1)
-        with allure.step("Test Case S06-02"):
+        with allure.step("Test Case S05-02"):
             pass
         assert next_btn.get_attribute("disabled") is None
 
-        time.sleep(1)
-        next_btn.click()
-        # Test Case S06-03 TBD
+        # next_btn.click()
+        driver.execute_script("$(arguments[0]).click()", next_btn)
+        # Test Case S05-03 TBD
         time.sleep(5)
         self.TCS06(driver)
 
     @allure.story('Step 06 - Confirm your ID')
     def TCS06(self, driver):
         next_btn = driver.find_element(By.CSS_SELECTOR, "[data-testid=submitconfirmIdPersonal]")
-        with allure.step("Test Case S07-01"):
+        with allure.step("Test Case S06-01"):
             pass
         assert next_btn.get_attribute("disabled") is not None
 
@@ -229,7 +246,7 @@ class TestACY:
         upload_id_address = driver.find_element(By.CSS_SELECTOR, "[data-testid=extend1]")
         upload_id_others = driver.find_element(By.CSS_SELECTOR, "[data-testid=extend2]")
 
-        file_path = os.getcwd()+"\\test.png"
+        file_path = os.getcwd() + "\\test.png"
         upload_id_front.send_keys(file_path)
         time.sleep(1)
         upload_id_back.send_keys(file_path)
@@ -239,13 +256,17 @@ class TestACY:
         upload_id_others.send_keys(file_path)
 
         time.sleep(1)
-        with allure.step("Test Case S07-02"):
+        with allure.step("Test Case S06-02"):
             pass
         assert next_btn.get_attribute("disabled") is None
 
+        try:
+            driver.execute_script("document.querySelectorAll('[data-garden-id=\"buttons.icon_button\"]')[1].click();")
+        except Exception as ex:
+            print("chat room no show")
+
         time.sleep(1)
         next_btn.click()
-        # Test Case S06-03 TBD
         # self.TCS07(driver)
 
     @allure.story('Thank you')
