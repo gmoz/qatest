@@ -3,6 +3,7 @@ import time
 import random
 
 import allure
+import pytest
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 import yaml
@@ -11,11 +12,27 @@ import yaml
 @allure.epic('ACY Register Testing')
 @allure.feature('TCS01-S07')
 class TestACY:
-    param = None
+    driver = None
 
-    def init_param(self):
+    @pytest.fixture(scope='session', autouse=True)
+    def webdriver(self):
+
+        if self.driver is None:
+            options = webdriver.ChromeOptions()
+            options.add_argument("--disable-notifications")
+            # options.add_argument("--headless")
+            driver = webdriver.Chrome(options=options)
+            driver.set_window_size(1280, 1080)
+
+        return driver
+
+    @pytest.fixture(scope='session', autouse=True)
+    def param(self):
+        param = {}
         with open('params_tcs.yaml', 'r') as f:
-            self.param = yaml.load(f, Loader=yaml.FullLoader)
+            param = yaml.load(f, Loader=yaml.FullLoader)
+
+        return param
 
     def get_otp_code(self, phone):
         # suppose there is an API can get the correct otp code
@@ -34,20 +51,16 @@ class TestACY:
 
     @allure.title('TCS01')
     @allure.description('Step 01-You are just 6 easy steps away from placing your first trade with us.')
-    def TCS01(self):
-        options = webdriver.ChromeOptions()
-        options.add_argument("--disable-notifications")
-        # options.add_argument("--headless")
-        driver = webdriver.Chrome(options=options)
-        driver.set_window_size(1280, 1080)
+    def test_TCS01(self, webdriver, param):
+        driver = webdriver
 
         # bypass the i18n
-        driver.get(self.param['TargetUrl'])
+        driver.get(param['TargetUrl'])
         i18n_btn = driver.find_element(By.CSS_SELECTOR, "[class='redirect-modal-bottom']") \
             .find_element(By.CSS_SELECTOR, '[class="button"]')
         if i18n_btn:
             i18n_btn.click()
-        driver.get(self.param['TargetUrl'])
+        driver.get(param['TargetUrl'])
 
         account_type_field = driver.find_element(By.CSS_SELECTOR, "[data-testid=entity]")
         country_field = driver.find_element(By.CSS_SELECTOR, "[data-testid=country]")
@@ -72,16 +85,16 @@ class TestACY:
         driver.execute_script("document.querySelector('[data-testid=country7]').click();")
         driver.execute_script("document.querySelector('[data-testid=title0]').click();")
 
-        first_name_field.send_keys(self.param['FormValue_S01']['FirstName'])
-        last_name_field.send_keys(self.param['FormValue_S01']['LastName'])
+        first_name_field.send_keys(param['FormValue_S01']['FirstName'])
+        last_name_field.send_keys(param['FormValue_S01']['LastName'])
         email_field.send_keys(self.get_random_email())
 
         driver.execute_script("document.querySelector('[data-testid=undefined0]').click();")
-        phone.send_keys(self.param['FormValue_S01']['Phone'])
-        code.send_keys(self.get_otp_code(self.param['FormValue_S01']['Phone']))
+        phone.send_keys(param['FormValue_S01']['Phone'])
+        code.send_keys(self.get_otp_code(param['FormValue_S01']['Phone']))
         time.sleep(1)
 
-        with allure.step("Test Case S01-06 PASSED"):
+        with allure.step("Test Case S01-06"):
             pass
         assert next_btn.get_attribute("disabled") is None
 
@@ -89,11 +102,11 @@ class TestACY:
         driver.execute_script("$(arguments[0]).click()", next_btn)
         time.sleep(5)
         # Test Case S01-07 TBD
-        self.TCS02(driver)
 
     @allure.title('TCS02')
     @allure.description('Step 02 - Tell us more about yourself.')
-    def TCS02(self, driver):
+    def test_TCS02(self, webdriver, param):
+        driver = webdriver
         id_field = driver.find_element(By.CSS_SELECTOR, "[data-testid=idNo]")
         address_field = driver.find_element(By.CSS_SELECTOR, "[data-testid=street]")
         city_field = driver.find_element(By.CSS_SELECTOR, "[data-testid=city]")
@@ -110,11 +123,11 @@ class TestACY:
         driver.execute_script("document.querySelector('[data-testid=birthmonth5]').click();")
         driver.execute_script("document.querySelector('[data-testid=birthyear27]').click();")
 
-        id_field.send_keys(self.param['FormValue_S02']['PhotoIDNumber'])
-        address_field.send_keys(self.param['FormValue_S02']['ResidentialAddress'])
-        city_field.send_keys(self.param['FormValue_S02']['City'])
-        state_field.send_keys(self.param['FormValue_S02']['State'])
-        zipcode_field.send_keys(self.param['FormValue_S02']['ZipCode'])
+        id_field.send_keys(param['FormValue_S02']['PhotoIDNumber'])
+        address_field.send_keys(param['FormValue_S02']['ResidentialAddress'])
+        city_field.send_keys(param['FormValue_S02']['City'])
+        state_field.send_keys(param['FormValue_S02']['State'])
+        zipcode_field.send_keys(param['FormValue_S02']['ZipCode'])
 
         time.sleep(1)
         with allure.step("Test Case S02-03"):
@@ -126,11 +139,10 @@ class TestACY:
         # Test Case S02-04 TBD
         time.sleep(5)
 
-        self.TCS03(driver)
-
     @allure.title('TCS03')
     @allure.description('Step 03 - Tell us your trading preferences.')
-    def TCS03(self, driver):
+    def test_TCS03(self, webdriver, param):
+        driver = webdriver
         next_btn = driver.find_element(By.CSS_SELECTOR, "[data-testid=submitTradingPreferences]")
         with allure.step("Test Case S03-01"):
             pass
@@ -156,11 +168,10 @@ class TestACY:
         # Test Case S03-05 TBD
         time.sleep(5)
 
-        self.TCS04(driver)
-
     @allure.title('TCS04')
     @allure.description('Step 04 - (1/2)We have created some practice questions for you')
-    def TCS04(self, driver):
+    def test_TCS04(self, webdriver, param):
+        driver = webdriver
         next_btn = driver.find_element(By.CSS_SELECTOR, "[data-testid=goNext]")
         with allure.step("Test Case S04-01"):
             pass
@@ -186,11 +197,11 @@ class TestACY:
         driver.execute_script("$(arguments[0]).click()", next_btn)
         # Test Case S04-04 TBD
         time.sleep(3)
-        self.TCS04_2(driver)
 
     @allure.title('TCS04_2')
     @allure.description('Step 04 - (2/2)We have created some practice questions for you')
-    def TCS04_2(self, driver):
+    def test_TCS04_2(self, webdriver, param):
+        driver = webdriver
         next_btn = driver.find_element(By.CSS_SELECTOR, "[data-testid=submitExperiences]")
         with allure.step("Test Case S04_2-01"):
             pass
@@ -215,11 +226,11 @@ class TestACY:
 
         # Test Case S05-03 TBD
         time.sleep(3)
-        self.TCS05(driver)
 
     @allure.title('TCS05')
     @allure.description('Step 05 - Please confirm you have read our Terms')
-    def TCS05(self, driver):
+    def test_TCS05(self, webdriver, param):
+        driver = webdriver
         next_btn = driver.find_element(By.CSS_SELECTOR, "[data-testid=submitTerms]")
         with allure.step("Test Case S05-01"):
             pass
@@ -240,11 +251,11 @@ class TestACY:
         driver.execute_script("$(arguments[0]).click()", next_btn)
         # Test Case S05-03 TBD
         time.sleep(5)
-        self.TCS06(driver)
 
     @allure.title('TCS06')
     @allure.description('Step 06 - Confirm your ID')
-    def TCS06(self, driver):
+    def test_TCS06(self, webdriver, param):
+        driver = webdriver
         next_btn = driver.find_element(By.CSS_SELECTOR, "[data-testid=submitconfirmIdPersonal]")
         with allure.step("Test Case S06-01"):
             pass
@@ -276,21 +287,15 @@ class TestACY:
 
         time.sleep(1)
         next_btn.click()
-        # self.TCS07(driver)
 
-    @allure.title('TCS07')
-    @allure.description('Thank you')
-    def TCS07(self, driver):
-
-        time.sleep(10)
-        tku = driver.find_elements(By.ID, "thankYouCard")
-
-        with allure.step("Test Case S07-01"):
-            pass
-        assert tku is not None
-
-
-def test_main():
-    test = TestACY()
-    test.init_param()
-    test.TCS01()
+    # @allure.title('TCS07')
+    # @allure.description('Thank you')
+    # def test_TCS07(self, webdriver):
+    #     driver = webdriver
+    #
+    #     time.sleep(10)
+    #     tku = driver.find_elements(By.ID, "thankYouCard")
+    #
+    #     with allure.step("Test Case S07-01"):
+    #         pass
+    #     assert tku is not None
