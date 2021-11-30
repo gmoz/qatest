@@ -12,17 +12,15 @@ import yaml
 @allure.epic('ACY Register Testing')
 @allure.feature('TCS01-S07')
 class TestACY:
-    driver = None
 
     @pytest.fixture(scope='class')
     def webdriver(self):
 
-        if self.driver is None:
-            options = webdriver.ChromeOptions()
-            options.add_argument("--disable-notifications")
-            # options.add_argument("--headless")
-            driver = webdriver.Chrome(options=options)
-            driver.set_window_size(1280, 1080)
+        options = webdriver.ChromeOptions()
+        options.add_argument("--disable-notifications")
+        # options.add_argument("--headless")
+        driver = webdriver.Chrome(options=options)
+        driver.set_window_size(1280, 1080)
 
         return driver
 
