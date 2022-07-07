@@ -1,5 +1,4 @@
-# register test
-for interview
+# Register test for practice
 
 - pip3 install requirements.txt
 - pytest --alluredir ./report
