@@ -1,4 +1,4 @@
-# ACY register test
+# register test
 for interview
 
 - pip3 install requirements.txt
